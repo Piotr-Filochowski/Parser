@@ -41,7 +41,6 @@ public class Parser {
         else return false;
     }
 
-
     private boolean isNumber(String value) {
         try {
             Integer.parseInt(value);
@@ -52,6 +51,5 @@ public class Parser {
         }
         return true;
     }
-
 
 }

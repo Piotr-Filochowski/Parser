@@ -17,11 +17,11 @@ public class ReversePolishNotation {
 
     Stack<Node> treeMakingStack = new Stack<Node>();
 
-    ReversePolishNotation(Map<String, String> variables){
+    ReversePolishNotation(Map<String, String> variables) {
         this.variables = variables;
     }
 
-    void setTokens(Queue<String> tokens){
+    void setTokens(Queue<String> tokens) {
         this.tokens = tokens;
         tokensONP.clear();
         convertingStack.clear();
@@ -38,7 +38,7 @@ public class ReversePolishNotation {
             } else if (isNumber(temp)) {
                 tokensONP.add(temp);
             } else if (isVariable(temp)) {
-                if(!isVariableSaved(temp)){
+                if (!isVariableSaved(temp)) {
                     throw new SyntaxException("???");
                 }
                 String variableValue = variables.get(temp);
@@ -105,30 +105,30 @@ public class ReversePolishNotation {
         String tokensPattern = "[a-zA-Z]+";
         Pattern regex = Pattern.compile(tokensPattern);
         Matcher matcher = regex.matcher(temp);
-        if(matcher.find()){
+        if (matcher.find()) {
             return (matcher.group(0).equals(temp));
         } else return false;
     }
 
-    private boolean isVariableSaved(String temp){
+    private boolean isVariableSaved(String temp) {
         return variables.containsKey(temp);
     }
 
-    private void moveOperatorsFromStackTillLeftBracket() {
+    private void moveOperatorsFromStackTillLeftBracket() throws SyntaxException{
         String temp;
         while (true) {
-            try {
-                temp = convertingStack.pop();
-                if (!temp.equals("(")) {
-                    tokensONP.add(temp);
-                } else {
-                    break;
-                }
-            } catch (EmptyStackException e) {
-                return;
+            if(convertingStack.isEmpty()){
+                throw new SyntaxException("ERROR");
+            }
+            temp = convertingStack.pop();
+            if (!temp.equals("(")) {
+                tokensONP.add(temp);
+            } else {
+                break;
             }
         }
     }
+
 
     private void moveOperatorsFromStack() {
         while (!convertingStack.isEmpty()) {
@@ -176,7 +176,7 @@ public class ReversePolishNotation {
         }
     }
 
-    BinaryTree makeTree() throws Exception{
+    BinaryTree makeTree() throws Exception {
 
         Queue<String> tokensONPTree = new LinkedList<String>();
 
@@ -187,12 +187,11 @@ public class ReversePolishNotation {
 
         ((LinkedList<String>) tokensONPTree).addAll(0, tokensONP);
 
-        while(!tokensONPTree.isEmpty()){
+        while (!tokensONPTree.isEmpty()) {
             temp = tokensONPTree.poll();
-            if(isNumber(temp)){
+            if (isNumber(temp)) {
                 treeMakingStack.push(new Node(temp));
-            }
-            else if(isOperator(temp)){
+            } else if (isOperator(temp)) {
                 tempRight = treeMakingStack.pop();
                 tempLeft = treeMakingStack.pop();
                 treeMakingStack.push(new Node(temp, tempLeft, tempRight));
